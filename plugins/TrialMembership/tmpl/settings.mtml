@@ -1,0 +1,109 @@
+<mt:setvarblock name="html_head" append="1">
+<style type="text/css">
+    ul.selectors {
+        max-height: 200px;
+        overflow: auto;
+    }
+    ul.selectors select {
+        width: 120px;
+        margin: 0 4px;
+    }
+    ul.selectors input {
+         width: 30px;
+         text-align: center;
+         margin: 0 4px;
+    }
+</style>
+
+<script type="text/javascript" src="<mt:StaticWebPath>jquery/jquery.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('p.add a').click(function(e){
+        $('.selector-hidden').clone().appendTo('ul.selectors').removeClass('selector-hidden').css('display','block');
+    });
+});
+
+function deleteSelector(el) {
+    $('#' + el).remove();
+}
+</script>
+</mt:setvarblock>
+
+<mt:setvarblock name="page_title">Trial Membership: Timers</mt:setvarblock>
+
+<mt:include name="dialog/header.tmpl">
+
+<p>Select a role and specify a length of time for users with that role to remain active. After the specified length of time has elapsed, users with the selected role will be disabled. If multiple roles are applied to a user, and those roles each have timers, the role with the shortest timer will be the active one.</p>
+
+<form method="post" enctype="multipart/form-data" action="<mt:var name="script_url">">
+    <input type="hidden" name="__mode" value="trial_mem_timers" />
+    <input type="hidden" name="magic_token" value="<mt:Var name="magic_token">" />
+
+<mtapp:Setting
+    id="timer-selectors"
+    label_class="top-label"
+    label="Role and Timer Rules">
+    <ul class="selectors">
+    <mt:Loop name="selectors">
+        <li class="selector" id="selector-<mt:Var name="__counter__">">
+            <p>Users assigned to the role
+                <select name="role">
+                    <option value=""></option>
+                <mt:Loop name="roles">
+                    <option value="<mt:Var name="role">"<mt:If name="role" eq="$role_id"> selected="selected"</mt:If>><mt:Var name="role_name"></option>
+                </mt:Loop>
+                </select>
+            should be disabled after
+                <input type="text" name="timer" value="<mt:Var name="timer">" />
+            days have elapsed since the user was created.
+            <span><a href="javascript:void(0)" onclick="deleteSelector('selector-<mt:Var name="__counter__">');" class="icon-error icon-left">Delete</a></span>
+            </p>
+        </li>
+    </mt:Loop>
+        <li class="selector selector-hidden" style="display: none;">
+            <p>Users assigned to the role <mt:Var name="role">
+                <select name="role">
+                    <option value=""></option>
+                <mt:Loop name="roles">
+                    <option value="<mt:Var name="role">"><mt:Var name="role_name"></option>
+                </mt:Loop>
+                </select>
+            should be disabled after
+                <input type="text" name="timer" value="<mt:Var name="timer">" style="width: 30px; text-align: center;" />
+            days have elapsed since the user was created.
+<mt:Ignore>
+            <span><a href="javascript:void(0)" onclick="deleteSelector('selector-<mt:Var name="__counter__">');" class="icon-error icon-left">Delete</a></span>
+</mt:Ignore>
+            </p>
+        </li>
+    </ul>
+    <p class="add"><a href="javascript:void(0)" class="icon-create icon-left">Add another rule</a></p>
+</mtapp:Setting>
+
+<mtapp:Setting
+    id="notification"
+    label_class="top-label"
+    label="Notification Email"
+    hint="Notify the above email address when any users are disabled."
+    show_hint="1">
+    <input type="text" name="email" value="<mt:Var name="email">" style="width: 603px;" />
+</mtapp:Setting>
+
+    <div class="actions-bar">
+        <div class="actions-bar-inner pkg actions">
+            <button
+                type="submit"
+                accesskey="s"
+                class="primary-button close"
+                title="Save (s)">Save</button>
+            <button
+                onclick="closeDialog(); return false"
+                type="submit"
+                class="cancel"
+                accesskey="x"
+                title="Close (x)">Close</button>
+        </div>
+    </div>
+</form>
+
+<mt:include name="dialog/footer.tmpl">

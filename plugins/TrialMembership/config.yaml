@@ -1,0 +1,42 @@
+name: 'Trial Membership'
+id: TrialMembership
+description: 'Disable users after a specified amount of time has elapsed'
+author_name: uiNNOVATIONS
+author_link: http://uinnovations.com
+version: 1.0
+
+settings:
+    timers:
+        scope: system
+    email:
+        scope: system
+
+page_actions:
+    list_user:
+        disabled_user_timer:
+            label:      'Trial Membership'
+            order:      900
+            permission: administer
+            dialog:     trial_mem_timers
+    # This list_authors option is necessary to make the Page Action show when
+    # navigating to the upper-right System Overview menu and choosing user.
+    # list_user is called when visiting through Manage > Users
+    list_authors:
+        disabled_user_timer:
+            label:      'Trial Membership'
+            order:      900
+            permission: administer
+            dialog:     trial_mem_timers
+
+applications:
+    cms:
+        methods:
+            trial_mem_timers: $TrialMembership::TrialMembership::Plugin::save_timers
+
+tasks:
+    update_user_timers:
+        label: 'Run role timers to disable users.'
+        # Frequency is specified in seconds. 3600 seconds is 1 hour.
+        frequency: 3600
+        code: $TrialMembership::TrialMembership::Plugin::update_user_timers
+
