@@ -3,13 +3,31 @@ id: TrialMembership
 description: 'Disable users after a specified amount of time has elapsed'
 author_name: uiNNOVATIONS
 author_link: http://uinnovations.com
-version: 1.0
+version: 1.1
+schema_version: 1
+
+system_config_template: system_config_template.mtml
 
 settings:
     timers:
         scope: system
-    email:
+    email_address:
         scope: system
+    user_email_subject:
+        scope: system
+        default: 'Renew your access!'
+    user_email_body:
+        scope: system
+        default: "Renew your access by clicking the below link, or pasting it into your browser:\n\n<mt:ResetPasswordURL>"
+    track_activations:
+        scope: system
+
+init_app: $TrialMembership::TrialMembership::Init::init_app
+
+applications:
+    cms:
+        methods:
+            trial_mem_timers: $TrialMembership::TrialMembership::Plugin::save_timers
 
 page_actions:
     list_user:
@@ -28,15 +46,22 @@ page_actions:
             permission: administer
             dialog:     trial_mem_timers
 
-applications:
-    cms:
-        methods:
-            trial_mem_timers: $TrialMembership::TrialMembership::Plugin::save_timers
-
 tasks:
     update_user_timers:
         label: 'Run role timers to disable users.'
         # Frequency is specified in seconds. 3600 seconds is 1 hour.
         frequency: 3600
         code: $TrialMembership::TrialMembership::Plugin::update_user_timers
+
+callbacks:
+    cms_post_save.author: $TrialMembership::TrialMembership::Plugin::post_save_author
+    api_post_save.author: $TrialMembership::TrialMembership::Plugin::post_save_author
+
+object_types:
+    author:
+        last_activated: datetime meta
+
+tags:
+    function:
+        ResetPasswordURL: $TrialMembership::TrialMembership::Tags::reset_pw_url
 

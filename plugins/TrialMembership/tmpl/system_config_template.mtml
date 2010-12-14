@@ -1,0 +1,42 @@
+<mtapp:Setting
+    id="notification"
+    label="Administrator Notification Email"
+    hint="Notify the above email address when a user's status changes."
+    show_hint="1">
+    <div class="textarea-wrapper">
+        <input type="text" name="email_address" value="<mt:Var name="email_address">" />
+    </div>
+</mtapp:Setting>
+
+<mtapp:Setting
+    id="user_email_subject"
+    label="User Email Subject"
+    hint="Enter a subject line to be used to notify users when their access is revoked. MT tags may be used here."
+    show_hint="1">
+    <div class="textarea-wrapper">
+        <input type="text" name="user_email_subject" value="<mt:Var name="user_email_subject" escape="html">" />
+    </div>
+</mtapp:Setting>
+
+<mtapp:Setting
+    id="user_email_body"
+    label="User Email Body"
+    hint="Enter body text to be used to notify users when their access is revoked. MT tags may be used here."
+    show_hint="1">
+    <div class="textarea-wrapper">
+        <textarea name="user_email_body" style="width: 500px;height: 80px;"><mt:Var name="user_email_body" escape="html"></textarea>
+    </div>
+</mtapp:Setting>
+
+<mtapp:Setting
+    id="track_activations"
+    label="Track Activations"
+    hint="The number of times a user's accoutn is activated can be saved to a custom field. Select a custom field for Trial Membership to save the renewal count to."
+    show_hint="1">
+    <select name="track_activations">
+        <option value="">None</option>
+    <mt:AuthorCustomFields>
+        <option value="<mt:CustomFieldBasename>"<mt:If tag="CustomFieldBasename" eq="$track_activations"> selected="selected"</mt:If>><mt:CustomFieldName></option>
+    </mt:AuthorCustomFields>
+    </select>
+</mtapp:Setting>
