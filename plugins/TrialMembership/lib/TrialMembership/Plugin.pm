@@ -231,8 +231,18 @@ sub _email_user_for_renewal {
         # again.
         # Generate Token
         require MT::Util::Captcha;
-        my $salt    = MT::Util::Captcha->_generate_code(8);
-        my $expires = time + ( 60 * 60 );
+        my $salt = MT::Util::Captcha->_generate_code(8);
+        
+        # The password reset expiration timer doesn't matter for our use, but
+        # it's required. By default it's set to 1 hour in the future, which is
+        # too short. We don't know when the user is disabled--it could be in 
+        # the middle of the night or some other inconvenient time. When they
+        # do get this email and go to reset the password, the expiration time
+        # has passed and they're told to click to reactivate... again. It's
+        # counterintuitive. So, lets set a much longer expiration time and
+        # avoid the whole problem: set the expiration for 30 days.
+        my $expires = time + ( 60 * 60 * 30 );
+
         my $token = MT::Util::perl_sha1_digest_hex(
             $salt . $expires . $app->config->SecretToken 
         );

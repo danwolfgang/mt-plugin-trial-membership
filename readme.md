@@ -45,18 +45,12 @@ If you want to notify users when they are disabled you likely want to customize 
 
 Use the **Track Activations** field to monitor the number of times a user renews their access. From this field you can select a custom field where the activation count can be saved. (Which means, yes, you need to create a custom field to use this feature. The "single-line text" or "multi-line text" custom fields are the only type of field that make sense to use here.)
 
-Within your `mt-config.cgi`, set a config directive:
-
-    TrialMembershipURL http://domain.com/path/to/mt-cp.cgi
-
-The requirement of this config directive will (hopefully) be removed in a future release.
-
 ## Building a User Renewal Email
 
 The user renewal email is in the author context, so author tags can be used right there. For example, create a list of all blogs this author has a role in:
 
     <mt:AuthorDisplayName setvar="author_name">Blogs by <mt:Var name="author_name">:
-    <mt:Blogs><mt:Authors><mt:if tag="AuthorDisplayName" eq="$author_name">* <mt:BlogName>: <mt:BlogURL></mt:if></mt:Authors>
+    <mt:Blogs><mt:Authors need_entry="0" any_type="1" status="pending OR disabled"><mt:if tag="AuthorDisplayName" eq="$author_name">* <mt:BlogName>: <mt:BlogURL></mt:if></mt:Authors>
     </mt:Blogs>
 
 Note that because this is a plain-text email extra spaces and new lines will show up. I have spaced the above code to make the final email look good.
@@ -78,7 +72,7 @@ Tags can also be used to create the `return_to` URL. The following example is sp
 
     <mt:AuthorDisplayName setvar="author_name">
     <mt:Blogs>
-        <mt:Authors>
+        <mt:Authors need_entry="0" any_type="1" status="pending OR disabled">
             <mt:If tag="AuthorDisplayName" eq="$author_name">
                 <mt:BlogURL encode_url="1" setvar="return_to">
             </mt:If>

@@ -56,7 +56,9 @@ sub _new_password {
             if ( time > $u->password_reset_expires ) {
                 return $app->start_recover(
                     {   error => $app->translate(
-                            'Your request to change your password has expired.'
+                            'Your request to change your password has '
+                            . 'expired. Please click the Recover button '
+                            . 'below to reactivate your account.'
                         ),
                     }
                 );

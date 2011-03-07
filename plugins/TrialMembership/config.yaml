@@ -3,7 +3,7 @@ id: TrialMembership
 description: 'Disable users after a specified amount of time has elapsed'
 author_name: uiNNOVATIONS
 author_link: http://uinnovations.com
-version: 1.1
+version: 1.1.1
 schema_version: 1
 
 system_config_template: system_config_template.mtml
