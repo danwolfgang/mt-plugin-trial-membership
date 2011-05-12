@@ -154,8 +154,6 @@ sub _mark_user_pending {
     my $role_id  = shift;
     my ($timer, $author) = @_;
 
-    my $plugin = MT->component('TrialMembership');
-
     # Is this user a "superuser"? We don't ever want to disable a
     # superuser! Also, check that the author is ACTIVE. No point in
     # changing the status of a user who isn't enabled.
@@ -171,6 +169,7 @@ sub _mark_user_pending {
             $author->status( MT::Author::PENDING() );
             # Should the user be emailed when their access changes?
             if ($timer->{email_renewal}) {
+                my $plugin = MT->component('TrialMembership');
                 _email_user_for_renewal(
                     $plugin->get_config_value('user_email_subject', 'system'), 
                     $plugin->get_config_value('user_email_body', 'system'), 
@@ -182,13 +181,13 @@ sub _mark_user_pending {
             $author->status( MT::Author::INACTIVE() );
         }
         $author->save;
-    }
 
-    # Save a note to the Activity log, and notify the admin.
-    my $message = $plugin->name . ' disabled the user "' . $author->name 
-        . '," who has the role "' . MT->model('role')->load($role_id)->name
-        . '" assigned to them.';
-    _admin_notification($message);
+        # Save a note to the Activity log, and notify the admin.
+        my $message = $plugin->name . ' disabled the user "' . $author->name 
+            . '," who has the role "' . MT->model('role')->load($role_id)->name
+            . '" assigned to them.';
+        _admin_notification($message);
+    }
 }
 
 sub _admin_notification {
